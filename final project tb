@@ -1,0 +1,35 @@
+module tb_i2c_project;
+reg clk = 0;
+    reg rst, rw, start, stop, ack;
+    reg [6:0] addr;
+    reg [7:0] data_in;
+    wire [7:0] data_out;
+    wire busy, err, ready, sca;
+    wire sda;
+   
+i2c_master uut (
+        .clk_i(clk), .rst_i(rst), .m_w_r_i(rw), .m_start_i(start),
+        .m_stop_i(stop), .m_slv_add_i(addr), .m_ack_i(ack),
+        .m_data_i(data_in), .m_data_o(data_out), .m_busy_o(busy),
+        .m_error_o(err), .m_data_ready_o(ready), .sda(sda), .sca(sca)
+    );
+initial begin
+always #5 clk=~clk
+end
+ initial begin
+   rst = 1;
+        rw = 0;      
+        start = 0;
+        stop = 1;      
+        addr = 7'b11;    
+        data_in = 8'b01;
+        ack = 0;
+        #15 rst = 0;     
+        #10 start = 1;
+        #10 start = 0;
+
+        #200;
+        $finish;   
+    end
+
+endmodule
